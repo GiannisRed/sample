@@ -1,0 +1,49 @@
+<div class="modal-header">
+    <div class="profile-card">
+        <div class="center-cropped"  
+                ng-style="{'background-image':'url({{$ctrl.user.profile_banner_url}})'}" >
+            <img ng-src="{{$ctrl.user.profile_banner_url}}">
+        </div>
+        <div class="avatar-image">
+            <img ng-src="{{$ctrl.user.profile_image_url_https}}">
+        </div>
+        <div class="user">
+            <p>{{$ctrl.user.name}}</p>
+            <p class="text-muted">@{{$ctrl.user.screen_name}}</p>
+            <p>
+                {{$ctrl.user.description}}
+            </p>
+            <!-- <div class="row">
+                <div class="col-md-4">
+                    <p>Tweeet</p>
+                    <p></p>
+                </div>
+                <div class="col-md-4">
+                    <p>Following</p> 
+                </div>
+                <div class="col-md-4">
+                    <p>Followers</p>
+                </div>
+            </div> -->
+        </div>
+    </div>
+</div>
+<div class="modal-body" id="modal-body">
+    
+</div>
+<div class="modal-footer" id="user-statistics">
+    <!-- <button class="btn btn-primary" type="button" ng-click="$ctrl.ok()">OK</button>
+    <button class="btn btn-warning" type="button" ng-click="$ctrl.cancel()">Cancel</button> -->
+    <div class="col-md-4">
+        <p>Tweet</p>
+        <p>{{$ctrl.user.statuses_count}}</p>
+    </div>
+    <div class="col-md-4">
+        <p>Following</p> 
+        <p>{{$ctrl.user.friends_count}}</p>
+    </div>
+    <div class="col-md-4">
+        <p>Followers</p>
+        <p>{{$ctrl.user.followers_count}}</p>
+    </div>
+</div>

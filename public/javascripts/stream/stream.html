@@ -1,0 +1,117 @@
+<div class="container">
+    <div ng-if="vm.isAuthenticated()">
+        <div class="row">
+            <form>
+                <div class="form-group">
+                    <label class="control-label" for="focusedInput">
+                        Streaming API 
+                        <span ng-if="vm.isStreamActive" class="label label-success">Online</span>
+                        <span ng-if="!vm.isStreamActive" class="label label-danger">Stopped</span>
+                    </label>
+                </div>
+            </form>
+        </div>
+        <div class="row">
+            <div class="btn-group btn-toggle"> 
+                <button class="btn btn-default" ng-class="{ disabled: vm.isStreamActive }" ng-click="vm.toggleActive()">ON</button>
+                <button class="btn btn-default" ng-class="{ disabled: !vm.isStreamActive }" ng-click="vm.toggleActive()">OFF</button>
+            </div>
+            <hr>
+        </div>
+        <div class="row">
+            <div class="col-md-9">
+                <div class="text-center" ng-show="vm.newTweets.counter > 0">
+                    <p>There are {{vm.newTweets.counter}} new tweets! 
+                        <a ng-click="vm.getNewTweets()">Click here to see them.</a>
+                    </p>
+                </div>
+                <div class="panel panel-default" ng-repeat="tweet in vm.tweets track by $index">
+                    <div class="panel-body">
+                        <div class="row">
+        
+                            <div class="col-xs-1">
+                                <img ng-click="vm.showUser(tweet.user.screenname)" 
+                                     ng-src="{{ tweet.avatar}}" class="img-responsive">
+                            </div>
+        
+                            <div class="col-xs-8">
+                                <h6>{{ tweet.author }} <span class="text-muted">@{{ tweet.screenname }} - {{ tweet.date | date : 'medium' }}</span></h6>
+                                <!--<img ng-src="{{vm.photo.images.standard_resolution.url}}" class="img-responsive">-->
+                                <p>{{ tweet.body }}</p>
+                            </div>
+        
+                        </div>
+                    </div>
+                    <div class="panel-footer">
+                        <div class="row">
+                            <div class="col-xs-offset-1 col-xs-8">
+                                <h5>
+                                    <i class="ion-pound"></i>: <span ng-repeat="tag in tweet.hashtags">{{ tag }} </span>
+                                </h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <form class="form-horizontal">
+                    <fieldset>
+                        <legend>Track By:</legend>
+                        <p class="text-primary">
+                            In order for you changes to take effect you need to Restart the Stream service.
+                        </p>
+                        <span ng-repeat="track in vm.tracks" 
+                              class="label label-primary" 
+                              id="stream-tracks">
+                            {{track.keyword}}
+                            <i id="del-track" 
+                               ng-click="vm.deleteTrack(track._id, $index)" 
+                               class="fa fa-trash 2x"
+                               data-toggle="tooltip" 
+                               data-placement="top" 
+                               title="Delete" 
+                               data-original-title="Tooltip on top">
+                            </i>
+                        </span>
+                        <div class="form-group">
+                            <label class="col-md-3">Keyword</label>
+                            <div class="col-md-10">
+                                <input type="text" class="form-control" ng-model="vm.keyword">
+                                <div class="alert alert-dismissible alert-danger" ng-if="vm.keywordError">
+                                    <button type="button" class="close" data-dismiss="alert">&times;</button>
+                                    <a href="#" class="alert-link">{{vm.keywordError}}</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                                <div class="col-lg-10 col-lg-offset-3">
+                                    <button type="reset" 
+                                            ng-click="vm.clear()" 
+                                            class="btn btn-default">
+                                            Clear
+                                    </button>
+                                    <button type="submit" 
+                                            ng-click="vm.createTrack()" 
+                                            class="btn btn-primary" 
+                                            ng-disabled="!vm.keyword || vm.keyword==''">
+                                              Submit
+                                    </button>
+                                </div>
+                            </div>
+                        
+                    </fieldset>
+                </form>
+            </div>
+        </div>
+        <div class="pagination-controls">
+            <paging
+                page="vm.currentPage" 
+                page-size="vm.pageSize" 
+                total="vm.total"
+                paging-action="vm.goToPage('Paging clicked!', page, vm.newTweets.counter)"
+                show-prev-next="true"
+                show-first-last="true">
+            </paging>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,90 @@
+<div class="container">
+    <div id="search">
+        <div class="input-group col-md-4">
+            <input type="text" ng-model="vm.filters.q" class="form-control" placeholder="Search for...">
+            <span class="input-group-btn">
+                <button class="btn btn-default" type="button" ng-click="vm.search()">Go!</button>
+            </span>
+        </div>
+        <div id="search-filter" class="row">
+            <div class="col-md-4">
+                <div class="radio">
+                    <label>
+                        <input type="radio" 
+                                ng-model="vm.filters.result_type" 
+                                value="mixed">
+                                mixed (include both popular and real time results).
+                    </label>
+                </div>
+                <div class="radio">
+                    <label>
+                        <input type="radio" 
+                                ng-model="vm.filters.result_type" 
+                                value="recent">
+                                recent (return only the most recent results in the response).
+                    </label>
+                </div>
+                <div class="radio">
+                    <label>
+                        <input type="radio" 
+                                ng-model="vm.filters.result_type" 
+                                value="popular">
+                                popular (return only the most popular results in the response).
+                    </label>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label>Per Page: </label>
+                    <input type="number" class="form-control" ng-model="vm.filters.count">
+                </div>
+            </div>
+        </div>
+        <!-- /input-group -->
+        <p class="text-success" ng-if="vm.search_metadata.completed_in">
+            <span>Completed in {{ vm.search_metadata.completed_in }} sec.</span>
+        </p>
+    </div>
+    <div id="results" ng-if="vm.statuses.length > 0">
+        <ul class="pager">
+            <!-- Apply disabled class if search_metadata does not include next_results property -->
+            <li class="previous"><a ng-click="vm.previous()">&larr; Previous</a></li>
+            <li class="next" ng-class="{'disabled': !vm.search_metadata.next_results}" ng-click="vm.next()"><a>Next &rarr;</a></li>
+        </ul>
+        <div class="panel panel-default" ng-repeat="tweet in vm.statuses">
+            <div class="panel-body">
+                <div class="row">
+
+                    <div class="col-xs-1">
+                        <img ng-click="vm.showUser(tweet.user.screen_name)" ng-src="{{ tweet.user.profile_image_url}}" class="img-responsive">
+                    </div>
+
+                    <div class="col-xs-8">
+                        <h6>{{ tweet.user.name }} <span class="text-muted">@{{ tweet.user.screen_name }} - {{ tweet.created_at | date : 'medium' }}</span></h6>
+                        <!--<img ng-src="{{vm.photo.images.standard_resolution.url}}" class="img-responsive">-->
+                        <p>{{ tweet.text }}</p>
+                    </div>
+
+                </div>
+            </div>
+            <div class="panel-footer">
+                <div class="row">
+                    <div class="col-xs-offset-1 col-xs-8">
+                        <h5>
+                            <i class="ion-pound"></i>: <span ng-repeat="tag in tweet.entities.hashtags">{{ tag.text }} </span>
+                        </h5>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-offset-1 col-xs-8">
+                        <h5>
+                            <i class="ion-share"></i> {{ tweet.retweet_count }} retweets &nbsp;&nbsp;
+                            <i class="ion-heart text-danger"></i> {{ tweet.favorite_count }} likes &nbsp;&nbsp; {{ tweet.retweeted
+                            }}
+                        </h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

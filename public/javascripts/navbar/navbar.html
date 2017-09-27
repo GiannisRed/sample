@@ -1,0 +1,39 @@
+<div ng-controller="NavbarCtrl as vm" class="navbar navbar-default navbar-static-top">
+    <div class="container-fluid">
+
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a href="/" class="navbar-brand"><i class="ion-images"></i> Twitter App</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav">
+                <li>
+                    <a>
+                        <i class="fa fa-twitter fa-2x" aria-hidden="true"></i>
+                    </a>
+                </li>
+                <li ng-if="vm.isAuthenticated() && currentUser.username">
+                    <a href="http://instagram.com/{{currentUser.username}}">
+                    <img class="media-object img-rounded" style="display: inline;" ng-src="{{currentUser.picture}}"> @{{currentUser.username}}
+                    </a>
+                </li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li ng-if="!vm.isAuthenticated()"><a href="#/login">Log in</a></li>
+                <li ng-if="!vm.isAuthenticated()"><a href="#/signup">Sign up</a></li>
+                <li ng-if="vm.isAuthenticated()"><a class="compose-tweet" ng-click="vm.composeTweet()"><span class="compose">Tweet</span></a></li>
+                <li ng-if="vm.isAuthenticated()"><a href="#/profile">Profile</a></li>
+                <li ng-if="vm.isAuthenticated()"><a ng-click="vm.logout()" href="">Logout</a></li>
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+</div>

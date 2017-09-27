@@ -1,0 +1,82 @@
+<div class="container">
+    <div ng-if="vm.isAuthenticated()">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="panel panel-default">
+                    <!-- Default panel contents -->
+                    <div class="panel-heading">Scheduled Tweets</div>
+
+                    <!-- Table -->
+                    <table class="table">
+                        <tr>
+                            <th>
+                                #
+                            </th>
+                            <th>
+                                Tweet
+                            </th>
+                            <th>
+                                DateTime
+                            </th>
+                            <th>
+                                Completed
+                            </th>
+                        </tr>
+                        <tr ng-repeat="tweet in vm.tweets">
+                            <td>
+                                {{$index+1}}
+                            </td>
+                            <td>
+                                {{tweet.text}}
+                            </td>
+                            <td>
+                                {{tweet.datetime | date:'yyyy-MM-dd HH:mm'}}
+                            </td>
+                            <td>
+                                {{tweet.completed}}
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <form class="form-horizontal">
+                    <fieldset>
+                        <legend>Schedule a new tweet</legend>
+                        <div class="form-group">
+                            <label class="col-md-2">Date and Time</label>
+                            <div class="col-md-10">
+                                <datetimepicker ng-model="vm.newTweet.datetime" data-before-render="vm.startDateBeforeRender($dates)">
+                                </datetimepicker>
+                                <p>Selected Date: {{ vm.newTweet.datetime | date:'yyyy-MM-dd HH:mm' }}</p>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-2">Text</label>
+                            <div class="col-md-10">
+                                <textarea class="form-control" placeholder="Tweet content..." rows="4" ng-model="vm.newTweet.text" maxlength="{{vm.maxChars}}"></textarea>
+                                <span class="pull-right">{{vm.maxChars - vm.newTweet.text.length}}</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-10 col-md-offset-2">
+                                <div class="alert alert-dismissible alert-success" ng-if="vm.formInfo">
+                                    <button type="button" class="close" data-dismiss="alert">&times;</button>
+                                    <strong>{{vm.formInfo}} <a href="#" class="alert-link"></a>.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-lg-10 col-lg-offset-2">
+                                <button type="reset" ng-click="vm.cancel()" class="btn btn-default">Cancel</button>
+                                <button type="submit" ng-click="vm.submit()" class="btn btn-primary" ng-disabled="!vm.newTweet.datetime || vm.newTweet.text==''">
+                                          Submit
+                                  </button>
+                            </div>
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

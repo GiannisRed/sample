@@ -1,0 +1,36 @@
+<div class="container">
+    <div class="panel panel-default">
+        <div class="panel-body" style="height: 50vh;">
+            <div class="row">
+
+                <div class="col-xs-5 profile-content">
+                    <div class="profile-content-background">
+                        <img ng-src="{{vm.data.profile_background_image_url_https}}">
+                    </div>
+                    <div class="profile-content-avatar">
+                        <img ng-src="{{vm.data.profile_image_url_https}}" class="img-circle">
+                    </div>
+                </div>
+
+                <div class="col-xs-7">
+                    <div class="caption">
+                        <h5>{{ vm.data.name }}</h5>
+                        <h5 class="text-muted">@{{ vm.data.screen_name }}</h5>
+                        <p>Posts: {{ vm.data.statuses_count }} &nbsp; Followers: {{ vm.data.followers_count }} &nbsp; Following: {{ vm.data.friends_count }}</p>
+                        <p><span><i class="fa fa-calendar-o"></i></span> Member Since: {{vm.data.created_at |  date : 'medium' }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="panel-footer">
+            <div class="row">
+                <h5 class="text-center">Bio</h5>
+                <p>{{ vm.data.bio }} </p>
+            </div>
+            <div class="row">
+                <h5 class="text-center">Website</h5>
+                <p>{{ vm.data.website }} </p>
+            </div>
+        </div>
+    </div>
+</div>

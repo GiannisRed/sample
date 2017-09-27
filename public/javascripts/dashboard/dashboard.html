@@ -1,0 +1,18 @@
+<div ng-controller="SidebarCtrl as vm">
+    <div class="col-md-2" ng-if="vm.isAuthenticated()">
+        <ul class="nav nav-pills nav-stacked">
+            <li ui-sref-active="active"><a ui-sref="home">Home</a></li>
+            <li ui-sref-active="active"><a ui-sref="timeline">Timeline</a></li>
+            <li ui-sref-active="active"><a ui-sref="search">Search</a></li>
+            <li ui-sref-active="active"><a ui-sref="followers">Followers</a></li>
+            <li ui-sref-active="active"><a ui-sref="stream">Stream<span class="badge">{{vm.newTweets.counter}}</span></a></li>
+            <li ui-sref-active="active"><a ui-sref="task">Tasks</a></li>
+            <li ui-sref-active="active"><a ui-sref="autoTweet">AutoTweeter</a></li>
+            <li ui-sref-active="active"><a >Following</a></li>
+            <li ui-sref-active="active"><a >Requests</a></li>
+        </ul>
+    </div>
+    <div class="col-md-10">
+        <div ui-view></div>
+    </div>
+</div>

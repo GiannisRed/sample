@@ -1,0 +1,35 @@
+{
+  "name": "sample",
+  "description": "",
+  "main": "",
+  "license": "MIT",
+  "homepage": "",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "angularjs#^1.5.8",
+    "bower-bootswatch-paper": "paper-less#*",
+    "Ionicons": "ionicons#^2.0.1",
+    "angular-ui-router": "^0.3.1",
+    "jquery": "^3.1.0",
+    "bootstrap": "^3.3.7",
+    "satellizer": "^0.15.4",
+    "angular-animate": "^1.5.8",
+    "angular-sanitize": "^1.5.8",
+    "toastr": "^2.1.3",
+    "angular-messages": "^1.5.8",
+    "angular-bootstrap": "^2.5.0",
+    "angular-socket-io": "^0.7.0",
+    "socket.io-client": "^2.0.3",
+    "angular-paging": "^2.2.2"
+  },
+  "resolutions": {
+    "jquery": "^3.1.0",
+    "angular-ui-router": "^1.0.6"
+  }
+}

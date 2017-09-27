@@ -1,0 +1,23 @@
+<div class="modal-header">
+        <h3 class="modal-title text-center" id="modal-title">Compose new tweet</h3>
+    </div>
+    <div class="modal-body" id="modal-body">
+        <form>
+            <fieldset>
+                <div class="form-group">
+                    <div class="">
+                        <textarea class="form-control" placeholder="Tweet content..." rows="4" ng-model="$ctrl.tweet.status" maxlength="{{$ctrl.maxChars}}"></textarea>
+                        <span class="pull-right">{{$ctrl.maxChars - $ctrl.tweet.status.length}}</span>
+                    </div>
+                </div>
+            </fieldset>
+        </form>
+        <div class="alert alert-dismissible alert-danger" ng-if="$ctrl.error">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            <strong>{{$ctrl.error}} <a href="#" class="alert-link"></a>.
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" type="button" ng-click="$ctrl.ok()">OK</button>
+        <button class="btn btn-warning" type="button" ng-click="$ctrl.cancel()">Cancel</button>
+    </div>

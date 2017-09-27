@@ -1,0 +1,40 @@
+<div class="container">
+    
+    <div ng-if="vm.isAuthenticated()">
+      <div class="row" ng-repeat="tweet in vm.user_timeline_tweets">
+          <div class="panel panel-default">
+            <div class="panel-body">
+              <div class="row">
+  
+                <div class="col-xs-1">
+                  <img ng-src="{{ tweet.user.profile_image_url}}" ng-click="vm.showUser(tweet.user.screen_name)" class="img-responsive">
+                </div>
+  
+                <div class="col-xs-8">
+                  <h6>{{ tweet.user.name }} <span class="text-muted">@{{ tweet.user.screen_name }} - {{ tweet.created_at | date : 'medium' }}</span> </h6> 
+                  <p>{{ tweet.text }}</p>
+                </div>
+
+                <div class="col-xs-1 pull-right">
+                    <span ng-click="vm.promptDelete(tweet)"><i class="fa fa-trash fa fa-2x"></i></span>
+                </div>
+              </div>
+            </div>
+            <div class="panel-footer">
+              <div class="row">
+                <div class="col-xs-offset-1 col-xs-8">
+                  <h5>
+                    <i class="ion-share"></i> {{ tweet.retweet_count }} retweets
+                    &nbsp;&nbsp;
+                    <i class="ion-heart text-danger"></i> {{ tweet.favorite_count }} likes
+                    &nbsp;&nbsp;
+                    <!-- {{ tweet.retweeted }} -->
+                  </h5>
+                </div>
+              </div>
+            </div>
+        </div>
+      </div>
+    </div>
+  
+  </div>
