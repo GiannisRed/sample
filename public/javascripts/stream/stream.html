@@ -11,7 +11,7 @@
                 </div>
             </form>
         </div>
-        <div class="row">
+        <div class="row" ng-if="vm.isAdmin()">
             <div class="btn-group btn-toggle"> 
                 <button class="btn btn-default" ng-class="{ disabled: vm.isStreamActive }" ng-click="vm.toggleActive()">ON</button>
                 <button class="btn btn-default" ng-class="{ disabled: !vm.isStreamActive }" ng-click="vm.toggleActive()">OFF</button>
@@ -46,14 +46,14 @@
                         <div class="row">
                             <div class="col-xs-offset-1 col-xs-8">
                                 <h5>
-                                    <i class="ion-pound"></i>: <span ng-repeat="tag in tweet.hashtags">{{ tag }} </span>
+                                    <i class="ion-pound"></i>: <span ng-repeat="tag in tweet.hashtags track by $index">{{ tag }} </span>
                                 </h5>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-3" ng-if="vm.isAdmin()">
                 <form class="form-horizontal">
                     <fieldset>
                         <legend>Track By:</legend>

@@ -25,6 +25,7 @@
         vm.pageSize = 10;
         vm.total;
         vm.goToPage = goToPage;
+        vm.isAdmin = isAdmin;
 
         mySocket.on('tweet', function(tweet) {
             console.log(tweet);
@@ -36,7 +37,7 @@
 
         function activate() {
             if ($auth.isAuthenticated() && ($rootScope.currentUser)) {
-                console.log('Auto tweeter view initialized..');
+                console.log('Auto tweeter view initialized..', $rootScope.currentUser);
                 TrackBy.tracks()
                 .success(function(response) {
                     console.log(response);
@@ -65,6 +66,10 @@
                     console.log(error);
                 });
             }
+        }
+
+        function isAdmin() {
+            return $rootScope.currentUser.role == 'admin';
         }
 
         function goToPage(message, page, skip) {
