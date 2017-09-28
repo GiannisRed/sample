@@ -156,6 +156,7 @@ app.get('/api/scheduled-tweet', isAuthenticated, function (req, res) {
  * Create
  */
 app.post('/api/task', isAuthenticated, function (req, res) {
+  console.log('User: ', req.user);
   var newTask = new Task(req.body);
   newTask.save(function (err, task) {
       if (err) {
@@ -163,11 +164,23 @@ app.post('/api/task', isAuthenticated, function (req, res) {
               info: 'error during task create',
               error: err
           });
-      };
-      res.json({
-          info: 'Task created successfully',
-          data: task
-      });
+      } else {
+        var user = req.user;
+        user.tasks.push(task.id);
+        user.save(function(err, user) {
+          if(err) {
+            res.json({
+              info: 'error during task create',
+              error: err
+            });
+          } else {
+            res.json({
+              info: 'Task created successfully',
+              data: task
+            });
+          }
+        })
+      }
   });
 });
 
@@ -175,18 +188,26 @@ app.post('/api/task', isAuthenticated, function (req, res) {
 * Read
 */
 app.get('/api/task', isAuthenticated, function (req, res) {
-  Task.find(function (err, tasks) {
-      if (err) {
-          res.json({
-              info: 'error during find task',
-              error: err
-          });
-      };
+  User.findById(req.user._id)
+    .populate('tasks')
+    .exec(function(err, user) {
       res.json({
           info: 'tasks found successfully',
-          data: tasks
+          data: user.tasks
       });
-  });
+    })
+  // Task.find(function (err, tasks) {
+  //     if (err) {
+  //         res.json({
+  //             info: 'error during find task',
+  //             error: err
+  //         });
+  //     };
+  //     res.json({
+  //         info: 'tasks found successfully',
+  //         data: tasks
+  //     });
+  // });
 });
 
 app.get('/api/task/:id', isAuthenticated, function (req, res) {
@@ -252,10 +273,23 @@ app.delete('/api/task/:id', isAuthenticated, function (req, res) {
               info: 'error during remove task',
               error: err
           });
-      };
-      res.json({
-          info: 'task removed successfully'
-      });
+      } else {
+        // User.findById(req.user._id, function(err, user) {
+          User.findOneAndUpdate({_id: req.user._id}, { $pull: { tasks: req.params.id } }, {new: true}, function(err, user) {
+            console.log('DELETE? ', user);
+            if(err) {
+              res.status(400).json({
+                info: 'error during remove task',
+                error: err
+              })
+            } else {
+              res.json({
+                info: 'task removed successfully'
+              });
+            }
+          });
+        // });
+      }
   });
 });
 
@@ -741,6 +775,8 @@ function getTracks() {
   });
 }
 
+seedDB();
+
 function initEvents(stream) {
   streamStatus = true;
   stream.on('tweet', function(tweet) {
@@ -799,10 +835,10 @@ function initEvents(stream) {
                       }
                     })
                   } else {
-                    console.log('####');
+                    // console.log('####');
                     foundHashtag.tweets.push(storedTweet._id);
-                    console.log('iparxei idi: ', foundHashtag);
-                    console.log('####');
+                    // console.log('iparxei idi: ', foundHashtag);
+                    // console.log('####');
                     // foundHashtag.tweets.push(storedTweet._id);
                     foundHashtag.save(function(err, r) {
                       if(!err) {
@@ -1019,6 +1055,33 @@ function updateStatus(tweet) {
           console.log('tweet not found!');
       }
     });
+  });
+}
+
+/**
+ * Seed db with admin
+ */
+function seedDB() {
+  User.find({role: 'admin'}, function(err, admin) {
+    console.log('isAdmin?', admin);
+    if(admin.length == 0) {
+      var user = new User({
+        email: 'admin@admin.com',
+        password: 'admin',
+        role: 'admin'
+      });
+  
+      bcrypt.genSalt(10, function(err, salt) {
+        bcrypt.hash(user.password, salt, function(err, hash) {
+          user.password = hash;
+  
+          user.save(function() {
+            var token = createJWT(user);
+            // res.send({ token: token, user: user });
+          });
+        });
+      });
+    }
   });
 }
 

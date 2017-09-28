@@ -8,7 +8,9 @@ var User = mongoose.model('User', new mongoose.Schema({
     username: String,
     fullName: String,
     picture: String,
-    accessToken: String
+    accessToken: String,
+    role: { type: String, default: 'user' },
+    tasks: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Task' }]
 }));
 
 module.exports = User;
