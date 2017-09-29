@@ -121,6 +121,25 @@
           templateUrl: '/javascripts/detail/detail.html',
           controller: 'DetailCtrl',
           controllerAs: 'vm'
+        })
+        .state('users', {
+          parent: 'dashboard',
+          url: "/users",
+          templateUrl: "/javascripts/users/users.html",
+          controller: 'UsersCtrl',
+          controllerAs: 'vm',
+          resolve: {
+            isAuthenticated: function($q, $auth, $rootScope) {
+              var deferred = $q.defer();
+
+              if($rootScope.currentUser.role == 'admin') {
+                deferred.resolve();
+              } else {
+                deferred.reject('You do not have the rights to view this page!')
+              }
+              return deferred.promise;
+            }
+          }
         });
     })
     .run(function ($rootScope, $window, $auth) {

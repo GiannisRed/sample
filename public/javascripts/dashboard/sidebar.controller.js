@@ -5,10 +5,11 @@
         .module('app')
         .controller('SidebarCtrl', SidebarCtrl);
 
-    SidebarCtrl.$inject = ['$auth', 'TweetIndicator'];
+    SidebarCtrl.$inject = ['$auth', 'TweetIndicator', '$rootScope'];
 
-    function SidebarCtrl($auth, TweetIndicator){
+    function SidebarCtrl($auth, TweetIndicator, $rootScope){
         var vm = this;
+        vm.isAdmin = isAdmin;
 
         activate();
 
@@ -21,6 +22,10 @@
 
         function isAuthenticated(){
             return $auth.isAuthenticated();
+        }
+
+        function isAdmin() {
+            return $rootScope.currentUser.role == 'admin';
         }
     }
 })();
