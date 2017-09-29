@@ -347,7 +347,9 @@ app.post('/auth/twitter', function(req, res) {
         oauth: profileOauth,
         json: true
       }, function(err, response, profile) {
-
+        console.log('Register: ', response);
+        console.log('profile: ', profile);
+        console.log('oauth: ', profileOauth);
         // Step 5a. Link user accounts.
         if (req.header('Authorization')) {
 
@@ -753,8 +755,67 @@ app.post('/api/stream', isAuthenticated, function(req, res) {
   }
 });
 
+/**
+ * GET users (only)
+ * Restricted to admin role.
+ */
+app.get('/api/users', isAuthenticated, isAdmin, function(req, res) {
+  User.find({ role: { $ne: 'admin' } }, function(err, users) {
+    if(!err) {
+      res.json({
+        info: 'Users retrieved successfully',
+        data: users
+      });
+    } else {
+      res.status(400).json({
+        info: 'Error while retrieving users',
+        error: err
+      });
+    }
+  });
+});
+
+/**
+ * PUT user (update)
+ */
+app.put('/api/user', isAuthenticated, isAdmin, function(req, res) {
+  var user = req.body.user;
+
+  User.findByIdAndUpdate({ _id: user._id }, user, {upsert: true}, function(err, user) {
+    if(err) {
+      res.status(400).json({
+        info: 'Error while updating user.',
+        error: err
+      });
+    } else {
+      res.json({
+        info: 'User updated.',
+        data: user
+      });
+    }
+  });
+});
+
+/**
+ * DELETE user
+ */
+app.delete('/api/user/:id', isAuthenticated, isAdmin, function(req, res) {
+  User.findByIdAndRemove({_id: req.params.id}, function(err, user) {
+    if(err) {
+      res.status(400).json({
+        info: 'Error while deleting user.',
+        error: err
+      })
+    } else {
+      res.json({
+        info: 'User deleted successfully.',
+        data: user
+      })
+    }
+  });
+});
+
 var tracks = getTracks().then(function(response) {
-  // console.log(response);
   console.log(response);
   stream = T.stream('statuses/filter', { track: response });
   initEvents(stream);
@@ -986,6 +1047,9 @@ function createToken(user) {
   return jwt.encode(payload, config.tokenSecret);
 }
 
+/**
+ * Middleware
+ */
 function isAuthenticated(req, res, next) {
   if (!(req.headers && req.headers.authorization)) {
     return res.status(400).send({ message: 'You did not provide a JSON Web Token in the Authorization header.' });
@@ -1009,6 +1073,17 @@ function isAuthenticated(req, res, next) {
     req.user = user;
     next();
   })
+}
+
+function isAdmin(req, res, next) {
+  if(req.user.role != 'admin') {
+    res.status(404)
+       .json({
+         message: 'You do not have the required privileges to view the requested resource.'
+       })
+  } else {
+    next();
+  }
 }
 
 // Cron Jobs - Scheduler

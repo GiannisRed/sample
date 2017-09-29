@@ -1,0 +1,49 @@
+<div class="container">
+    <div class="row">
+        <button class="btn btn-primary" 
+                ng-click="vm.refresh()">
+                <i class="fa fa-refresh" aria-hidden="true"></i>
+        </button>
+        <div class="table-responsive">
+            <table class="table table-hover table-striped">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Email</th>
+                        <th>Twitter</th>
+                        <th>Role</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="user in vm.users track by $index">
+                        <td>{{$index+1}}</td>
+                        <td>
+                            <input class="form-control" 
+                                type="text" 
+                                ng-model="user.email"
+                                ng-readonly="true">
+                        </td>
+                        <td>
+                            <input class="form-control" 
+                                type="text" 
+                                ng-model="user.twitter"
+                                ng-readonly="true">
+                        </td>
+                        <td>
+                            <input class="form-control" 
+                                   type="text" 
+                                   ng-model="user.role"
+                                   ng-readonly="!user.editable">
+                        </td>
+                        <td>
+                            <button class="btn btn-warning" ng-if="!user.editable" ng-click="vm.edit($index)">Edit</button>
+                            <button class="btn btn-info" ng-if="user.editable" ng-click="vm.update(user, $index)">Update</button>
+                            <button class="btn btn-danger" ng-click="vm.remove(user, $index)">Delete</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
