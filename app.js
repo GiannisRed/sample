@@ -33,9 +33,9 @@ var config = require('./config');
 
 var app = express();
 
-// Socket
-var server = require('http').createServer(app);
-var io = require('socket.io')(server);
+app.listen(3000, function () {
+  console.log('Example app listening on port 3000!')
+});
 
 // Connects to the MongoDB Server in the test database
 mongoose.connect("mongodb://localhost:27017/test");
@@ -156,11 +156,11 @@ app.get('/api/scheduled-tweet', isAuthenticated, function (req, res) {
  * Create
  */
 app.post('/api/task', isAuthenticated, function (req, res) {
-  console.log('User: ', req.user);
   var newTask = new Task(req.body);
+  newTask.user = req.user.id;
   newTask.save(function (err, task) {
       if (err) {
-          res.json({
+          res.status(400).json({
               info: 'error during task create',
               error: err
           });
@@ -169,7 +169,7 @@ app.post('/api/task', isAuthenticated, function (req, res) {
         user.tasks.push(task.id);
         user.save(function(err, user) {
           if(err) {
-            res.json({
+            res.status(400).json({
               info: 'error during task create',
               error: err
             });
@@ -196,38 +196,35 @@ app.get('/api/task', isAuthenticated, function (req, res) {
           data: user.tasks
       });
     })
-  // Task.find(function (err, tasks) {
-  //     if (err) {
-  //         res.json({
-  //             info: 'error during find task',
-  //             error: err
-  //         });
-  //     };
-  //     res.json({
-  //         info: 'tasks found successfully',
-  //         data: tasks
-  //     });
-  // });
 });
 
+/**
+ * Find a Task by Id
+ */
 app.get('/api/task/:id', isAuthenticated, function (req, res) {
   Task.findById(req.params.id, function (err, task) {
-      if (err) {
-          res.json({
-              info: 'error during find task',
-              error: err
-          });
-      };
-      if (task) {
-          res.json({
-              info: 'task found successfully',
-              data: task
-          });
+    if (err) {
+      res.status(400).json({
+          info: 'error during find task',
+          error: err
+      });
+    };
+    if (task) {
+      if(task.user.toString() == req.user.id) {
+        res.json({
+          info: 'task found successfully',
+          data: task
+        });
       } else {
-          res.json({
-              info: 'task not found'
-          });
+        res.json({
+          info: 'task not found'
+        });
       }
+    } else {
+      res.json({
+          info: 'task not found'
+      });
+    }
   });
 });
 
@@ -237,28 +234,34 @@ app.get('/api/task/:id', isAuthenticated, function (req, res) {
 app.put('/api/task/:id', isAuthenticated, function (req, res) {
   Task.findById(req.params.id, function (err, task) {
       if (err) {
-          res.json({
+          res.status(400).json({
               info: 'error during find task',
               error: err
           });
       };
       if (task) {
+        if(task.user.toString() == req.user.id) {
           _.merge(task, req.body);
           task.save(function (err) {
-              if (err) {
-                  res.json({
-                      info: 'error during task update',
-                      error: err
-                  });
-              };
-              res.json({
-                  info: 'task updated successfully'
-              });
+            if (err) {
+                res.status(400).json({
+                    info: 'error during task update',
+                    error: err
+                });
+            };
+            res.json({
+                info: 'task updated successfully'
+            });
           });
-      } else {
+        } else {
           res.json({
-              info: 'task not found'
+            info: 'task not found'
           });
+        }
+      } else {
+        res.json({
+            info: 'task not found'
+        });
       }
   });
 });
@@ -269,7 +272,7 @@ app.put('/api/task/:id', isAuthenticated, function (req, res) {
 app.delete('/api/task/:id', isAuthenticated, function (req, res) {
   Task.findByIdAndRemove(req.params.id, function (err) {
       if (err) {
-          res.json({
+          res.status(400).json({
               info: 'error during remove task',
               error: err
           });
@@ -780,9 +783,6 @@ seedDB();
 function initEvents(stream) {
   streamStatus = true;
   stream.on('tweet', function(tweet) {
-    // console.log('I found a tweet', tweet.entities);
-    // console.log('entities: ', tweet.entities);
-    // console.log('user: ', tweet.user);
     var _id = null;
     var hasHashtag = false;
     if(tweet.user !== undefined) {
