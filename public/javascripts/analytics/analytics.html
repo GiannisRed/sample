@@ -1,0 +1,49 @@
+<div class="container">
+    <div class="row">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+              <h3 class="panel-title">Overview</h3>
+            </div>
+            <div class="panel-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead>
+                            <th>Keyword</th>
+                            <th>Count</th>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="row in vm.data">
+                                <td>{{row.keyword}}</td>
+                                <td>{{row.count}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+          </div>          
+    </div>
+
+    <div class="row">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+              <h3 class="panel-title">Graphs</h3>
+            </div>
+            <div class="panel-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead>
+                            <th>Keyword</th>
+                            <th>Count</th>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="keyword in vm.data">
+                                <td>{{keyword.text}}</td>
+                                <td>{{keyword.tweets.length}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+          </div>          
+    </div>
+</div>

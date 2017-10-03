@@ -9,7 +9,9 @@ var tweetSchema = mongoose.Schema({
     date: Date,
     screenname: String,
     hashtags: [{ type: String }],
-});
+},
+    { timestamps: true }
+);
 
 tweetSchema.statics.getTweets = function(page, skip, callback) {
     var tweets = [];

@@ -96,6 +96,13 @@
           controller: 'AutoTweetCtrl',
           controllerAs: 'vm'
         })
+        .state('analytics', {
+          parent: 'dashboard',
+          url: "/analytics",
+          templateUrl: "/javascripts/analytics/analytics.html",
+          controller: 'AnalyticsCtrl',
+          controllerAs: 'vm'
+        })
         .state('task', {
           parent: 'dashboard',
           url: "/tasks",

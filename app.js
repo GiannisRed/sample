@@ -27,6 +27,7 @@ var TweetScheduled = require('./models/tweet_scheduled_model');
 var TrackBy = require('./models/trackBy_model');
 var Tweet = require('./models/tweet');
 var Hashtag = require('./models/hashtag');
+var Analytic = require('./models/analytic')
 
 // config
 var config = require('./config');
@@ -295,6 +296,54 @@ app.delete('/api/task/:id', isAuthenticated, function (req, res) {
       }
   });
 });
+
+app.get('/api/analytics', isAuthenticated, function(req, res) {
+
+  Hashtag
+    .find({ $or: [ {"text": "olympiacos"}] })
+    .populate('tweets')
+    .exec(function(err, tweets) {
+      res.json({
+        data: tweets
+      })
+    })
+});
+
+/**
+ * Analytics API overview statistics per hashtag
+ */
+app.get('/api/analytics/overview', isAuthenticated, function (req, res) {
+  var filters = [];
+
+  TrackBy.find({}, function(err, data) {
+    data.forEach(function(el) {
+      filters.push({ text: el.keyword});
+    });
+
+    Hashtag
+    .aggregate([
+      { $match: { $or: filters } }, 
+      { $unwind: '$tweets' },
+      { 
+          $group: { _id: "$text", count: { $sum: 1 } } 
+      },
+      { 
+        $project: { 
+          keyword: '$_id', 
+          count: 1, 
+          _id: 0 
+        }
+      } 
+    ]).
+    exec(function(err, tags) {
+      res.json({
+        data: tags
+      })
+    });
+
+  });
+});
+
 
 /*
  |--------------------------------------------------------------------------
@@ -1107,6 +1156,59 @@ var j = schedule.scheduleJob('*/1 * * * *', function(){
     tweets.forEach(function(tweet) {
       updateStatus(tweet);
     })
+  });
+});
+
+var i = schedule.scheduleJob('59 23 * * *', function(){
+  console.log('Every day at 23:59');
+  var filters = [];
+
+  TrackBy.find({}, function(err, data) {
+    data.forEach(function(el) {
+      filters.push({ text: el.keyword});
+    });
+
+    Hashtag
+    .aggregate([
+      { $match: { $or: filters } }, 
+      { $unwind: '$tweets' },
+      { 
+          $group: { _id: "$text", count: { $sum: 1 } } 
+      },
+      { 
+        $project: { 
+          keyword: '$_id', 
+          count: 1, 
+          _id: 0 
+        }
+      } 
+    ]).
+    exec(function(err, tags) {
+      if(err) {
+        console.log(err);
+      } else {
+        var records = [];
+        tags.forEach(function(tag) {
+          var record = { 
+            hashtag: tag.keyword,
+            count: tag.count
+          }
+          records.push(record);
+        });
+        
+        var t = new Analytic({
+          hashtags: records
+        });
+        t.save(function(err, analytics) {
+          if(err) {
+            console.log(err);
+          } else {
+            console.log(analytics);
+          }
+        });
+      }
+    });
+
   });
 });
 
