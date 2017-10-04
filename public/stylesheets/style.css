@@ -462,6 +462,17 @@ button {
 	white-space: nowrap;
 }
 
+.filter {
+	display: flex;
+	align-items: baseline;
+	margin-bottom: 10px;
+}
+
+.filter > input {
+	width: 15%;
+	margin-left: 10px;
+}
+
 .footer {
 	color: #777;
 	padding: 10px 15px;

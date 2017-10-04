@@ -9,6 +9,7 @@
       'ui.bootstrap',
       'ui.bootstrap.datetimepicker',
       'btford.socket-io',
-      'bw.paging'
+      'bw.paging',
+      'angularUtils.directives.dirPagination'
     ]);
 })();

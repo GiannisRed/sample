@@ -8,8 +8,10 @@
     AnalyticsCtrl.$inject = ['AnalyticsAPI', '$auth'];
     function AnalyticsCtrl(AnalyticsAPI, $auth) {
         var vm = this;
-        
 
+        vm.pageSize = 15;
+        vm.currentPage = 1;
+        
         activate();
 
         ////////////////
