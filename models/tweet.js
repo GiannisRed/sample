@@ -9,6 +9,8 @@ var tweetSchema = mongoose.Schema({
     date: Date,
     screenname: String,
     hashtags: [{ type: String }],
+    source: String,
+    lang: String
 },
     { timestamps: true }
 );

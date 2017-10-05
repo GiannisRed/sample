@@ -309,6 +309,111 @@ app.get('/api/analytics', isAuthenticated, function(req, res) {
     })
 });
 
+app.get('/api/analytics/client', isAuthenticated, function(req, res) {
+  Tweet
+    .aggregate([
+      // {
+      //   $match: { $text: { $search: "Twitter for Android" } }
+      // },
+      {
+        $group: { _id: "$source", count: { $sum: 1 } } 
+      }
+    ])
+    .exec(function(err, tweets) {
+      if(err) {
+        res.json({
+          error: err
+        })
+      } else {
+        res.json({
+          data: tweets
+        });
+      }
+    });
+});
+
+app.post('/api/analytics/client', isAuthenticated, function(req, res) {
+  var hashtag = req.body.hashtag;
+  Tweet
+    .aggregate([
+      { 
+        $match: { hashtags: { $in: [hashtag] } }
+      },
+      {
+        $group: { _id: "$source", count: { $sum: 1 } } 
+      }
+    ])
+    .exec(function(err, tweets) {
+      if(err) {
+        res.json({
+          error: err
+        })
+      } else {
+        res.json({
+          data: tweets
+        });
+      }
+    });
+});
+
+app.post('/api/analytics/tweet', isAuthenticated, function(req, res) {
+  var tweet = req.body.tweet;
+  var period = req.body.period;
+
+  var startDate = new Date();
+  var endDate = new Date(startDate - (1440 * 60 * 1000));
+
+  var groupBy = {
+    "_id": {
+        "year": { "$year": "$date" },
+        "month": { "$month": "$date" },
+        "dayOfMonth": { "$dayOfMonth": "$date" },
+        "hour": { "$hour": "$date" },
+    },
+    "count": { "$sum": 1 }
+  }
+
+  var matchBy = { 
+    date: { $gte: endDate, $lte: startDate }, 
+    hashtags: { $in: [tweet] },
+  } 
+
+  if(period == 'daily') {
+    delete matchBy.date;
+    delete groupBy._id.hour;
+  } else if(period == 'monthly') {
+    delete matchBy.date;
+    delete groupBy._id.hour;
+    delete groupBy._id.dayOfMonth;
+  } else if(period == 'yearly') {
+    delete matchBy.date;
+    delete groupBy._id.hour;
+    delete groupBy._id.dayOfMonth;
+    delete groupBy._id.month;
+  }
+  
+  Tweet
+    .aggregate([
+      { 
+        $match: matchBy
+      },
+      { 
+        $group: groupBy
+      },
+      { $sort: { _id: 1 } },
+  ])
+  .exec(function(err, tweets) {
+    if(err) {
+      res.json({
+        error: err
+      })
+    }
+    res.json({
+      data: tweets
+    })
+  })
+});
+
 /**
  * Analytics API overview statistics per hashtag
  */
@@ -322,7 +427,7 @@ app.get('/api/analytics/overview', isAuthenticated, function (req, res) {
 
     Hashtag
     .aggregate([
-      { $match: { $or: filters } }, 
+      // { $match: { $or: filters } }, 
       { $unwind: '$tweets' },
       { 
           $group: { _id: "$text", count: { $sum: 1 } } 
@@ -511,7 +616,7 @@ app.post('/api/search', isAuthenticated, function(req, res){
 
   T.get('search/tweets', { 
       max_id: req.body.max_id,
-      q: req.body.q, 
+      q: encodeURIComponent(req.body.q), 
       result_type: req.body.result_type, 
       count: req.body.count, 
       include_entities: req.body.include_entities,
@@ -794,7 +899,14 @@ app.post('/api/stream', isAuthenticated, function(req, res) {
   var status = req.body.status;
   console.log(status);
   if(status) {
-    stream.start();
+    var tracks = getTracks().then(function(response) {
+      console.log(response);
+      stream = T.stream('statuses/filter', { track: response });
+      initEvents(stream);
+    }, function(error){
+      console.log(error);
+    });
+    // stream.start();
     streamStatus = true;
     res.send({info: 'Status changed', status: status });
   } else {
@@ -896,6 +1008,7 @@ function initEvents(stream) {
     var _id = null;
     var hasHashtag = false;
     if(tweet.user !== undefined) {
+
       var storeTweet = {
         twitter_id: tweet.id_str,
         active: false,
@@ -903,7 +1016,9 @@ function initEvents(stream) {
         avatar: tweet.user.profile_image_url,
         body: tweet.text,
         date: tweet.created_at,
-        screenname: tweet.user.screen_name
+        screenname: tweet.user.screen_name,
+        source: tweet.source ? tweet.source.split('>')[1].split('<')[0] : tweet.source,
+        lang: tweet.lang
       };
 
       // hasthags
@@ -975,7 +1090,7 @@ function initEvents(stream) {
   })
 
   stream.on('error', function (request) {
-    console.log('error...', error);
+    console.log('error...', request);
   })
 }
 

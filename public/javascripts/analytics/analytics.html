@@ -1,61 +1,8 @@
 <div class="container">
-    <div class="row">
-        <div class="panel panel-primary">
-            <div class="panel-heading">
-              <h3 class="panel-title">Overview</h3>
-            </div>
-            <div class="panel-body">
-                <div ng-if="!vm.data">
-                    <i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>
-                    <span class="sr-only">Loading...</span>
-                </div>
-                <div class="table-responsive" ng-if="vm.data.length > 0">
-                    <div class="filter">
-                        <label for="search">Search:</label>
-                        <input ng-model="vm.search" id="search" class="form-control" placeholder="Filter text">
-                    </div>
-                    <table class="table table-bordered">
-                        <thead>
-                            <th>Keyword</th>
-                            <th>Count</th>
-                        </thead>
-                        <tbody>
-                            <tr dir-paginate="row in vm.data | filter:vm.search | itemsPerPage: vm.pageSize" current-page="vm.currentPage">
-                                <td>{{row.keyword}}</td>
-                                <td>{{row.count}}</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    <dir-pagination-controls boundary-links="true" 
-                                             on-page-change="pageChangeHandler(newPageNumber)" 
-                                             template-url="/lib/angularUtils-pagination/dirPagination.tpl.html">
-                    </dir-pagination-controls>
-                </div>
-            </div>
-          </div>          
-    </div>
+    <ul class="nav nav-tabs" style="margin: 10px;">
+        <li ui-sref-active="active"><a ui-sref="analytics.overview">Overview</a></li>
+        <li ui-sref-active="active"><a ui-sref="analytics.client">Client Used</a></li>
+    </ul>
 
-    <div class="row" style="display: none">
-        <div class="panel panel-primary">
-            <div class="panel-heading">
-              <h3 class="panel-title">Graphs</h3>
-            </div>
-            <div class="panel-body">
-                <div class="table-responsive">
-                    <table class="table table-bordered">
-                        <thead>
-                            <th>Keyword</th>
-                            <th>Count</th>
-                        </thead>
-                        <tbody>
-                            <tr ng-repeat="keyword in vm.data">
-                                <td>{{keyword.text}}</td>
-                                <td>{{keyword.tweets.length}}</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-          </div>          
-    </div>
+    <div ui-view></div>
 </div>

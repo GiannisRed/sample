@@ -98,11 +98,22 @@
         })
         .state('analytics', {
           parent: 'dashboard',
-          url: "/analytics",
+          // redirectTo: 'analytics.overview',
           templateUrl: "/javascripts/analytics/analytics.html",
-          controller: 'AnalyticsCtrl',
-          controllerAs: 'vm'
         })
+          .state('analytics.overview', {
+            url: "/overview",
+            templateUrl: "/javascripts/analytics-overview/analytics-overview.html",
+            controller: 'AnalyticsOverviewCtrl',
+            controllerAs: 'vm'
+          })
+          .state('analytics.client', {
+            // parent: 'analytics',
+            url: "/client",
+            templateUrl: "/javascripts/analytics-client/analytics-client.html",
+            controller: 'ClientCtrl',
+            controllerAs: 'vm'
+          })
         .state('task', {
           parent: 'dashboard',
           url: "/tasks",

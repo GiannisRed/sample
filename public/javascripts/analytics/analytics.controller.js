@@ -9,7 +9,7 @@
     function AnalyticsCtrl(AnalyticsAPI, $auth) {
         var vm = this;
 
-        vm.pageSize = 15;
+        vm.pageSize = 10;
         vm.currentPage = 1;
         
         activate();
