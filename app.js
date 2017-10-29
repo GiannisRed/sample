@@ -1253,11 +1253,10 @@ function isAdmin(req, res, next) {
 // Cron Jobs - Scheduler
 var j = schedule.scheduleJob('*/1 * * * *', function(){
   var durationInMinutes = 5;
-  console.log('Today is recognized by Rebecca Black!');
   var startDate = new Date();
   var endDate = new Date(startDate - (durationInMinutes * 60 * 1000));
-  console.log(startDate);
-  console.log(endDate);
+  // console.log(startDate);
+  // console.log(endDate);
   var tweets = TweetScheduled.find({
     completed: false,
     datetime: {
@@ -1267,7 +1266,7 @@ var j = schedule.scheduleJob('*/1 * * * *', function(){
   });
 
   tweets.select('_id text datetime').exec(function(err, tweets) {
-    console.log(tweets);
+    // console.log(tweets);
     tweets.forEach(function(tweet) {
       updateStatus(tweet);
     })
@@ -1275,7 +1274,7 @@ var j = schedule.scheduleJob('*/1 * * * *', function(){
 });
 
 var i = schedule.scheduleJob('59 23 * * *', function(){
-  console.log('Every day at 23:59');
+  // console.log('Every day at 23:59');
   var filters = [];
 
   TrackBy.find({}, function(err, data) {
