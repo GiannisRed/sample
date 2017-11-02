@@ -19,6 +19,14 @@
         <button type="submit" class="btn btn-block btn-primary">Sign up</button>
         <br/>
 
+        <div class="help-block" ng-if="vm.success">
+          <div class="text-success text-center">{{vm.success}}</div>
+        </div>
+
+        <div class="help-block" ng-if="vm.error">
+          <div class="text-danger text-center">{{vm.error}}</div>
+        </div>
+
         <p class="text-center text-muted"><small>Already have an account? <a href="#/login">Log in now</a></small></p>
       </form>
     </div>
