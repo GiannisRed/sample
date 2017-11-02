@@ -21,7 +21,8 @@
             removeTweet: removeTweet,
             getStoredTweets: getStoredTweets,
             getStoredTweetsPaged: getStoredTweetsPaged,
-            tweet: tweet
+            tweet: tweet,
+            getProfile: getProfile
         };
 
         return service;
@@ -29,6 +30,10 @@
         ////////////////
         function tweet(tweet) {
             return $http.post('http://127.0.0.1:3000/api/tweet', { status: tweet.status });
+        }
+
+        function getProfile() {
+            return $http.get('http://127.0.0.1:3000/api/profile')
         }
 
         function getStoredTweets() {

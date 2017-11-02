@@ -19,9 +19,13 @@
             if ($auth.isAuthenticated() && ($rootScope.currentUser && $rootScope.currentUser.username)) {
                 
             }
-            API.showUser(null, $rootScope.currentUser.twitter).success(function(data) {
-                console.log(data);
-                vm.data = data;
+            API.getProfile().success(function(data) {            
+                var screen_name = data.screen_name;
+
+                API.showUser(screen_name, null).success(function(data) {
+                    console.log(data);
+                    vm.data = data;
+                });
             });
         }
     }

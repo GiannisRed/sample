@@ -603,6 +603,27 @@ app.get('/api/user_timeline', isAuthenticated, function(req, res){
   });
 });
 
+app.get('/api/profile', isAuthenticated, function(req, res) {
+  var accountSettingsUrl = 'https://api.twitter.com/1.1/account/settings.json';
+
+  var T = new Twit({
+    consumer_key: config.TWITTER_KEY,
+    consumer_secret: config.TWITTER_SECRET,
+    access_token: "150651191-T2VWIid1GLMlKA75bmTil7oVqv3shUQ3ZHSEQBAK",
+    access_token_secret: "yE8yp0EkTqC7Ml2xUVYDcmh9M1Z0XpjdFxyZdjZpzrjvl"
+  });
+
+  T.get('account/settings', function(error, data, response) {
+    console.log(data);
+    if (!error && response.statusCode == 200) {
+      res.send(data);
+    }
+    else{
+      res.send(error);
+    }
+  });
+});
+
 /* Search Twitter API */
 app.post('/api/search', isAuthenticated, function(req, res){
   var userTimelineUrl = 'https://api.twitter.com/1.1/search/tweets.json';
